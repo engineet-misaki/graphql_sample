@@ -20,3 +20,6 @@ pnpm dev
   - "graphql": "^16.6.0"
   - "@apollo/client": "^3.7.15"
   - "@apollo/server": "^4.7.4"
+
+- あとやること
+  - モック状態で簡単な CURD 作る
