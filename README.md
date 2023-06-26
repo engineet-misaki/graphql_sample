@@ -16,6 +16,7 @@ pnpm dev
 
 - スタック
 
+  - node : v16.15.0
   - "next": "13.4.6"
   - "graphql": "^16.6.0"
   - "@apollo/client": "^3.7.15"
