@@ -27,11 +27,13 @@ const users: User[] = [
   { id: "2", name: "Bob", teamName: "Red" },
   { id: "3", name: "Carol", teamName: "White" },
 ];
+const user: User = { id: "3", name: "Carol", teamName: "White" };
 
 const resolvers: Resolvers = {
   Query: {
     users: () => users,
     teams: () => teams,
+    user: () => user,
   },
 };
 

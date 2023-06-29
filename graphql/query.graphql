@@ -1,4 +1,4 @@
-Query getUsersAndTeams {
+query getUsersAndTeams {
   users {
     id
     name

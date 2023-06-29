@@ -13,4 +13,5 @@ type Team {
 type Query {
   users: [User!]!
   teams: [Team!]!
+  user(id: ID!): User
 }
