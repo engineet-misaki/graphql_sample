@@ -13,26 +13,18 @@ const path = join(process.cwd(), "graphql", "schema.graphql");
 const typeDefs = readFileSync(path).toString("utf-8");
 
 // スキーマと実際のデータ構造の紐付けを resolvers で行う
-type Team = "Red" | "White";
-
-const teams: { id: string; name: Team }[] = [
-  { id: "1", name: "Red" },
-  { id: "2", name: "White" },
-];
-
-type User = { id: string; name: string; teamName: Team };
+type User = { id: string; name: string };
 
 const users: User[] = [
-  { id: "1", name: "Alice", teamName: "Red" },
-  { id: "2", name: "Bob", teamName: "Red" },
-  { id: "3", name: "Carol", teamName: "White" },
+  { id: "1", name: "Alice" },
+  { id: "2", name: "Bob" },
+  { id: "3", name: "Carol" },
 ];
-const user: User = { id: "3", name: "Carol", teamName: "White" };
+const user: User = { id: "3", name: "Carol" };
 
 const resolvers: Resolvers = {
   Query: {
     users: () => users,
-    teams: () => teams,
     user: () => user,
   },
 };
@@ -43,9 +35,6 @@ const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer, {
   context: async (req) => ({ req }),
 });
 
-export async function GET(request: NextRequest) {
-  return handler(request);
-}
 export async function POST(request: NextRequest) {
   return handler(request);
 }

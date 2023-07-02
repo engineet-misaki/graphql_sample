@@ -27,12 +27,10 @@ function UsersAndTeams() {
       </div>
       <h1 className={`text-xl font-bold underline`}>User List</h1>
       <ul className={`mt-4`}>
-        {users.map(({ id, name, teamName }) => {
+        {users.map(({ id, name }) => {
           return (
             <li key={id} className={`mt-4 flex items-center first:mt-0`}>
-              <p>
-                {name} : {teamName}
-              </p>
+              <p>{name} :</p>
               <Link
                 className={`ml-6 rounded border bg-teal-700 p-2 text-sm text-white`}
                 href={"/show"}

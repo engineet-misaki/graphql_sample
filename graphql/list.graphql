@@ -2,10 +2,5 @@ query getUsersAndTeams {
   users {
     id
     name
-    teamName
-  }
-  teams {
-    id
-    name
   }
 }
