@@ -15,20 +15,6 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export enum Grant {
-  Blue = 'BLUE',
-  Green = 'GREEN',
-  Red = 'RED'
-}
-
-export type Like = {
-  __typename?: 'Like';
-  date: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  likeUser: User;
-  memoId: Scalars['ID']['output'];
-};
-
 export type Memo = {
   __typename?: 'Memo';
   content: Scalars['String']['output'];
@@ -39,14 +25,11 @@ export type Memo = {
 export type Query = {
   __typename?: 'Query';
   memos?: Maybe<Array<Maybe<Memo>>>;
-  user?: Maybe<User>;
-  users?: Maybe<Array<Maybe<User>>>;
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
-  memos: Array<Maybe<Memo>>;
   name: Scalars['String']['output'];
 };
 
@@ -123,9 +106,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Grant: Grant;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  Like: ResolverTypeWrapper<Like>;
   Memo: ResolverTypeWrapper<Memo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -136,19 +117,10 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   ID: Scalars['ID']['output'];
-  Like: Like;
   Memo: Memo;
   Query: {};
   String: Scalars['String']['output'];
   User: User;
-}>;
-
-export type LikeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = ResolversObject<{
-  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  likeUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  memoId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MemoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Memo'] = ResolversParentTypes['Memo']> = ResolversObject<{
@@ -160,19 +132,15 @@ export type MemoResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   memos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Memo']>>>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  memos?: Resolver<Array<Maybe<ResolversTypes['Memo']>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
-  Like?: LikeResolvers<ContextType>;
   Memo?: MemoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

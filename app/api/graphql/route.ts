@@ -4,28 +4,25 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { readFileSync } from "fs";
 import { join } from "path";
-
-import { Resolvers } from "../../../graphql/dist/generated-server";
+import { gql } from "graphql-tag";
 
 import { NextResponse } from "next/server";
+import { QueryResolvers, Resolvers } from "@/graphql/dist/generated-server";
 
 const path = join(process.cwd(), "graphql", "schema.graphql");
 const typeDefs = readFileSync(path).toString("utf-8");
-
-// スキーマと実際のデータ構造の紐付けを resolvers で行う
-type User = { id: string; name: string };
 
 const memos = [
   {
     id: "1",
     content: "content1",
-    // userId: "1",
+    userId: "1",
     // likeNum: 1,
   },
   {
     id: "2",
     content: "content1",
-    // userId: "2",
+    userId: "2",
     // likeNum: 2,
   },
 ];
@@ -42,22 +39,15 @@ const users = [
   },
 ];
 
-const user: User = { id: "3", name: "Carol" };
-
-const resolvers: Resolvers = {
+const resolvers: QueryResolvers = {
   Query: {
-    // memos: () => memos,
-    // users: () => users,
-    // user: () => user,
+    memos: () => memos,
   },
-  // Memo: {
-  //   user(parent) {
-  //     return users.find((user) => user.id === parent.userId);
-  //   },
-  //   like(parent) {
-  //     return likes.filter((like) => like.memoId === parent.id);
-  //   },
-  // },
+  Memo: {
+    user: (parent) => {
+      return users.find((user) => user.id === parent.userId);
+    },
+  },
   // User: {
   //   memos(parent) {
   //     return memos.filter((memo) => memo.userId === parent.id);
@@ -70,6 +60,10 @@ const apolloServer = new ApolloServer({ typeDefs, resolvers });
 const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer, {
   context: async (req) => ({ req }),
 });
+
+export async function GET(request: Request) {
+  return handler(request);
+}
 
 export async function POST(request: NextRequest) {
   return handler(request);
