@@ -15,18 +15,54 @@ const typeDefs = readFileSync(path).toString("utf-8");
 // スキーマと実際のデータ構造の紐付けを resolvers で行う
 type User = { id: string; name: string };
 
-const users: User[] = [
-  { id: "1", name: "Alice" },
-  { id: "2", name: "Bob" },
-  { id: "3", name: "Carol" },
+const memos = [
+  {
+    id: "1",
+    content: "content1",
+    // userId: "1",
+    // likeNum: 1,
+  },
+  {
+    id: "2",
+    content: "content1",
+    // userId: "2",
+    // likeNum: 2,
+  },
 ];
+const users = [
+  {
+    id: "1",
+    name: "name1",
+    grant: "RED",
+  },
+  {
+    id: "2",
+    name: "name2",
+    grant: "GREEN",
+  },
+];
+
 const user: User = { id: "3", name: "Carol" };
 
 const resolvers: Resolvers = {
   Query: {
-    users: () => users,
-    user: () => user,
+    // memos: () => memos,
+    // users: () => users,
+    // user: () => user,
   },
+  // Memo: {
+  //   user(parent) {
+  //     return users.find((user) => user.id === parent.userId);
+  //   },
+  //   like(parent) {
+  //     return likes.filter((like) => like.memoId === parent.id);
+  //   },
+  // },
+  // User: {
+  //   memos(parent) {
+  //     return memos.filter((memo) => memo.userId === parent.id);
+  //   },
+  // },
 };
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
