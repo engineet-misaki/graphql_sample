@@ -1,4 +1,6 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { Todo as TodoModel } from '@prisma/client';
+import { Context } from '@/graphql/context/';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -6,6 +8,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -13,29 +16,46 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: string; output: string; }
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addTodo: Todo;
+  deleteTodo: Todo;
+  updateTodo: Todo;
+};
+
+
+export type MutationAddTodoArgs = {
+  content: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteTodoArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateTodoArgs = {
+  done: Scalars['Boolean']['input'];
+  id: Scalars['ID']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  teams: Array<Team>;
-  users: Array<User>;
+  listTodos: Array<Todo>;
 };
 
-export type Team = {
-  __typename?: 'Team';
+export type Todo = {
+  __typename?: 'Todo';
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  done: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  teamName: Scalars['String']['output'];
-};
 
-export type WithIndex<TObject> = TObject & Record<string, any>;
-export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -105,46 +125,53 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = ResolversObject<{
+export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Team: ResolverTypeWrapper<Team>;
-  User: ResolverTypeWrapper<User>;
-}>;
+  Todo: ResolverTypeWrapper<TodoModel>;
+};
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = ResolversObject<{
+export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  DateTime: Scalars['DateTime']['output'];
   ID: Scalars['ID']['output'];
+  Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
-  Team: Team;
-  User: User;
-}>;
+  Todo: TodoModel;
+};
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  teams?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>;
-  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
-}>;
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
 
-export type TeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['Team'] = ResolversParentTypes['Team']> = ResolversObject<{
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addTodo?: Resolver<ResolversTypes['Todo'], ParentType, ContextType, RequireFields<MutationAddTodoArgs, 'content'>>;
+  deleteTodo?: Resolver<ResolversTypes['Todo'], ParentType, ContextType, RequireFields<MutationDeleteTodoArgs, 'id'>>;
+  updateTodo?: Resolver<ResolversTypes['Todo'], ParentType, ContextType, RequireFields<MutationUpdateTodoArgs, 'done' | 'id'>>;
+};
+
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  listTodos?: Resolver<Array<ResolversTypes['Todo']>, ParentType, ContextType>;
+};
+
+export type TodoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Todo'] = ResolversParentTypes['Todo']> = {
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  done?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  teamName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = Context> = {
+  DateTime?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Team?: TeamResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
-}>;
+  Todo?: TodoResolvers<ContextType>;
+};
 
