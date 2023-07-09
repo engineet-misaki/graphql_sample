@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"yarn run codegen --watch\" \"next dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.7.15",
@@ -21,6 +22,7 @@
     "@types/react-dom": "18.2.5",
     "add": "^2.0.6",
     "autoprefixer": "10.4.14",
+    "concurrently": "^8.2.0",
     "encoding": "^0.1.13",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.6",

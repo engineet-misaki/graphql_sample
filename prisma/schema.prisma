@@ -16,3 +16,29 @@ model Todo {
   done      Boolean @default(false)
   createdAt String
 }
+
+model Memo {
+  id        String  @id @default(cuid())
+  content   String
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
+  likes     Like[]
+  createdAt String
+}
+
+model User {
+  id    String  @id @default(cuid())
+  name  String
+  memos   Memo[]
+  likes     Like[]
+  createdAt String
+}
+
+model Like {
+  id        String     @id @default(cuid())
+  likeUser  User   @relation(fields: [userId], references: [id])
+  userId    String
+  likeMemo  Memo   @relation(fields: [memoId], references: [id])
+  memoId    String
+  createdAt String
+}

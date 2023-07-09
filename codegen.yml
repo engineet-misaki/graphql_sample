@@ -1,10 +1,10 @@
 generates:
-  ./graphql/dist/generated/schema.graphql:
+  ./graphql/dist/schema.graphql:
     schema:
       - "./graphql/typeDefs/**/*.graphql"
     plugins:
       - schema-ast
-  ./graphql/dist/generated/resolvers-types.ts:
+  ./graphql/dist/resolvers-types.ts:
     schema:
       - "./graphql/typeDefs/**/*.graphql"
     plugins:
@@ -15,9 +15,12 @@ generates:
       mapperTypeSuffix: Model
       mappers:
         Todo: "@prisma/client#Todo"
+        User: "@prisma/client#User"
+        Memo: "@prisma/client#Memo"
+        Like: "@prisma/client#Like"
       scalars:
         DateTime: string
-  ./graphql/dist/generated/request.ts:
+  ./graphql/dist/request.ts:
     schema:
       - "./graphql/typeDefs/**/*.graphql"
     documents:

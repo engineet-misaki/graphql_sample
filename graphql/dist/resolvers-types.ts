@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { Todo as TodoModel } from '@prisma/client';
+import { Todo as TodoModel, User as UserModel, Memo as MemoModel, Like as LikeModel } from '@prisma/client';
 import { Context } from '@/graphql/context/';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -19,39 +19,77 @@ export type Scalars = {
   DateTime: { input: string; output: string; }
 };
 
+export type Like = {
+  __typename?: 'Like';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  likeUser: User;
+  memo: Memo;
+};
+
+export type Memo = {
+  __typename?: 'Memo';
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  like: Array<Maybe<Like>>;
+  likeNum: Scalars['Int']['output'];
+  user: User;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addTodo: Todo;
-  deleteTodo: Todo;
+  addMemo: Memo;
+  addUser: User;
+  deleteMemo: Memo;
+  likeMemo: Like;
+  likeMemoDelete: Like;
+  updateMemo: Memo;
 };
 
 
-export type MutationAddTodoArgs = {
+export type MutationAddMemoArgs = {
   content: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
-export type MutationDeleteTodoArgs = {
+export type MutationAddUserArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteMemoArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationLikeMemoArgs = {
+  id: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type MutationLikeMemoDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateMemoArgs = {
+  content: Scalars['String']['input'];
   id: Scalars['ID']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  listTodos: Array<Todo>;
-};
-
-export type Todo = {
-  __typename?: 'Todo';
-  content: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  user?: Maybe<User>;
+  memos?: Maybe<Array<Maybe<Memo>>>;
+  users?: Maybe<Array<Maybe<User>>>;
 };
 
 export type User = {
   __typename?: 'User';
-  age: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  memos?: Maybe<Array<Maybe<Memo>>>;
   name: Scalars['String']['output'];
 };
 
@@ -129,11 +167,13 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Like: ResolverTypeWrapper<LikeModel>;
+  Memo: ResolverTypeWrapper<MemoModel>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Todo: ResolverTypeWrapper<TodoModel>;
-  User: ResolverTypeWrapper<User>;
+  User: ResolverTypeWrapper<UserModel>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -141,46 +181,64 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   DateTime: Scalars['DateTime']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
+  Like: LikeModel;
+  Memo: MemoModel;
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
-  Todo: TodoModel;
-  User: User;
+  User: UserModel;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
-export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addTodo?: Resolver<ResolversTypes['Todo'], ParentType, ContextType, RequireFields<MutationAddTodoArgs, 'content'>>;
-  deleteTodo?: Resolver<ResolversTypes['Todo'], ParentType, ContextType, RequireFields<MutationDeleteTodoArgs, 'id'>>;
-};
-
-export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  listTodos?: Resolver<Array<ResolversTypes['Todo']>, ParentType, ContextType>;
-};
-
-export type TodoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Todo'] = ResolversParentTypes['Todo']> = {
-  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type LikeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = {
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  likeUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  memo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  age?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type MemoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Memo'] = ResolversParentTypes['Memo']> = {
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  like?: Resolver<Array<Maybe<ResolversTypes['Like']>>, ParentType, ContextType>;
+  likeNum?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationAddMemoArgs, 'content' | 'userId'>>;
+  addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'name'>>;
+  deleteMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationDeleteMemoArgs, 'id'>>;
+  likeMemo?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeMemoArgs, 'id' | 'userId'>>;
+  likeMemoDelete?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeMemoDeleteArgs, 'id'>>;
+  updateMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationUpdateMemoArgs, 'content' | 'id'>>;
+};
+
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  memos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Memo']>>>, ParentType, ContextType>;
+  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+};
+
+export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  memos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Memo']>>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
   DateTime?: GraphQLScalarType;
+  Like?: LikeResolvers<ContextType>;
+  Memo?: MemoResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Todo?: TodoResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

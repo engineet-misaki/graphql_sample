@@ -22,7 +22,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   addTodo: Todo;
   deleteTodo: Todo;
-  updateTodo: Todo;
 };
 
 
@@ -35,12 +34,6 @@ export type MutationDeleteTodoArgs = {
   id: Scalars['ID']['input'];
 };
 
-
-export type MutationUpdateTodoArgs = {
-  done: Scalars['Boolean']['input'];
-  id: Scalars['ID']['input'];
-};
-
 export type Query = {
   __typename?: 'Query';
   listTodos: Array<Todo>;
@@ -50,44 +43,42 @@ export type Todo = {
   __typename?: 'Todo';
   content: Scalars['String']['output'];
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  done: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
+  user?: Maybe<User>;
 };
 
-export type TodoFragmentFragment = { __typename?: 'Todo', id: string, content: string, done: boolean, createdAt?: string | null };
+export type User = {
+  __typename?: 'User';
+  age: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type TodoFragmentFragment = { __typename?: 'Todo', id: string, content: string, createdAt?: string | null };
 
 export type ListTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListTodosQuery = { __typename?: 'Query', listTodos: Array<{ __typename?: 'Todo', id: string, content: string, done: boolean, createdAt?: string | null }> };
+export type ListTodosQuery = { __typename?: 'Query', listTodos: Array<{ __typename?: 'Todo', id: string, content: string, createdAt?: string | null }> };
 
 export type AddTodoMutationVariables = Exact<{
   content: Scalars['String']['input'];
 }>;
 
 
-export type AddTodoMutation = { __typename?: 'Mutation', addTodo: { __typename?: 'Todo', id: string, content: string, done: boolean, createdAt?: string | null } };
-
-export type UpdateTodoMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
-  done: Scalars['Boolean']['input'];
-}>;
-
-
-export type UpdateTodoMutation = { __typename?: 'Mutation', updateTodo: { __typename?: 'Todo', id: string, content: string, done: boolean, createdAt?: string | null } };
+export type AddTodoMutation = { __typename?: 'Mutation', addTodo: { __typename?: 'Todo', id: string, content: string, createdAt?: string | null } };
 
 export type DeleteTodoMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteTodoMutation = { __typename?: 'Mutation', deleteTodo: { __typename?: 'Todo', id: string, content: string, done: boolean, createdAt?: string | null } };
+export type DeleteTodoMutation = { __typename?: 'Mutation', deleteTodo: { __typename?: 'Todo', id: string, content: string, createdAt?: string | null } };
 
 export const TodoFragmentFragmentDoc = gql`
     fragment TodoFragment on Todo {
   id
   content
-  done
   createdAt
 }
     `;
@@ -158,40 +149,6 @@ export function useAddTodoMutation(baseOptions?: Apollo.MutationHookOptions<AddT
 export type AddTodoMutationHookResult = ReturnType<typeof useAddTodoMutation>;
 export type AddTodoMutationResult = Apollo.MutationResult<AddTodoMutation>;
 export type AddTodoMutationOptions = Apollo.BaseMutationOptions<AddTodoMutation, AddTodoMutationVariables>;
-export const UpdateTodoDocument = gql`
-    mutation UpdateTodo($id: ID!, $done: Boolean!) {
-  updateTodo(id: $id, done: $done) {
-    ...TodoFragment
-  }
-}
-    ${TodoFragmentFragmentDoc}`;
-export type UpdateTodoMutationFn = Apollo.MutationFunction<UpdateTodoMutation, UpdateTodoMutationVariables>;
-
-/**
- * __useUpdateTodoMutation__
- *
- * To run a mutation, you first call `useUpdateTodoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTodoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTodoMutation, { data, loading, error }] = useUpdateTodoMutation({
- *   variables: {
- *      id: // value for 'id'
- *      done: // value for 'done'
- *   },
- * });
- */
-export function useUpdateTodoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTodoMutation, UpdateTodoMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTodoMutation, UpdateTodoMutationVariables>(UpdateTodoDocument, options);
-      }
-export type UpdateTodoMutationHookResult = ReturnType<typeof useUpdateTodoMutation>;
-export type UpdateTodoMutationResult = Apollo.MutationResult<UpdateTodoMutation>;
-export type UpdateTodoMutationOptions = Apollo.BaseMutationOptions<UpdateTodoMutation, UpdateTodoMutationVariables>;
 export const DeleteTodoDocument = gql`
     mutation DeleteTodo($id: ID!) {
   deleteTodo(id: $id) {

@@ -1,47 +1,89 @@
-type Todo {
+type Memo {
   id: ID!
   content: String!
-  done: Boolean!
+  user: User!
+  like: [Like]!
+  likeNum: Int!
+  createdAt: DateTime
+}
+
+type User {
+  id: ID!
+  name: String!
+  memos: [Memo]
+}
+
+type Like {
+  id: ID!
+  likeUser: User!
+  memo: Memo!
   createdAt: DateTime
 }
 
 type Query {
-  listTodos: [Todo!]!
+  memos: [Memo]
+  users: [User]
 }
 
 type Mutation {
-  addTodo(content: String!): Todo!
-  updateTodo(id: ID!, done: Boolean!): Todo!
-  deleteTodo(id: ID!): Todo!
+  addUser(name: String!): User!
+  addMemo(content: String!, userId: ID!): Memo!
+  updateMemo(id: ID!, content: String!): Memo!
+  likeMemo(id: ID!, userId: ID!): Like!
+  likeMemoDelete(id: ID!): Like!
+  deleteMemo(id: ID!): Memo!
 }
 
-fragment TodoFragment on Todo {
+fragment MemoFragment on Memo {
   id
   content
-  done
+  createdAt
+}
+fragment UserFragment on User {
+  id
+  name
+}
+fragment LikeFragment on Like {
+  id
   createdAt
 }
 
-query ListTodos {
-  listTodos {
-    ...TodoFragment
+query ListMemos {
+  memos {
+    ...MemoFragment
+    user {
+      ...UserFragment
+    }
   }
 }
 
-mutation AddTodo($content: String!) {
-  addTodo(content: $content) {
-    ...TodoFragment
+mutation AddUser($name: String!) {
+  addUser(name: $name) {
+    ...UserFragment
   }
 }
-
-mutation UpdateTodo($id: ID!, $done: Boolean!) {
-  updateTodo(id: $id, done: $done) {
-    ...TodoFragment
+mutation AddMemo($content: String!, $userId: ID!) {
+  addMemo(content: $content, userId: $userId) {
+    ...MemoFragment
   }
 }
-
-mutation DeleteTodo($id: ID!) {
-  deleteTodo(id: $id) {
-    ...TodoFragment
+mutation updateMemo($id: ID!, $content: String!) {
+  updateMemo(id: $id, content: $content) {
+    ...MemoFragment
+  }
+}
+mutation LikeMemo($id: ID!, $userId: ID!) {
+  likeMemo(id: $id, userId: $userId) {
+    ...LikeFragment
+  }
+}
+mutation likeMemoDelete($id: ID!) {
+  likeMemoDelete(id: $id) {
+    ...LikeFragment
+  }
+}
+mutation DeleteMemo($id: ID!) {
+  deleteMemo(id: $id) {
+    ...MemoFragment
   }
 }
