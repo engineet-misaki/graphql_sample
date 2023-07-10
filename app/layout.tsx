@@ -1,5 +1,13 @@
+"use client";
+
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "http://localhost:3000/api/graphql",
+  cache: new InMemoryCache(),
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +23,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ApolloProvider client={client}>
+          <div className={`p-10`}>{children}</div>
+        </ApolloProvider>
+      </body>
     </html>
   );
 }
