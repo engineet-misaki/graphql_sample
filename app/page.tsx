@@ -7,7 +7,8 @@ import {
   useQuery,
   gql,
 } from "@apollo/client";
-import { GetUsersAndTeamsDocument } from "../graphql/dist/generated-client";
+
+import * as Documents from "../graphql/dist/request";
 
 const client = new ApolloClient({
   uri: "http://localhost:3000/api/graphql",
@@ -15,22 +16,22 @@ const client = new ApolloClient({
 });
 
 function UsersAndTeams() {
-  const { loading, error, data } = useQuery(GetUsersAndTeamsDocument);
+  // const { loading, error, data } = useQuery(Documents.ListMemosDocument);
+  const { loading, error, data } = Documents.useListMemosQuery();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>Error</p>;
 
-  const { teams } = data;
+  const { memos } = data;
 
   return (
     <>
       <h1>List</h1>
       <ul>
-        {teams.map(({ id, name }) => {
-          return <li key={id}>{name}</li>;
+        {memos?.map((memo) => {
+          return <li key={memo?.id}>{memo?.content}</li>;
         })}
       </ul>
-      <h1>User List</h1>
     </>
   );
 }
