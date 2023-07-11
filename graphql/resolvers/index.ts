@@ -8,6 +8,16 @@ export const resolvers: Resolvers = {
     users: async (_parent, _args, { prisma }) => {
       return await prisma.user.findMany();
     },
+    memo: async (_parent, _args, { prisma }) => {
+      return await prisma.memo.findUniqueOrThrow({
+        where: { id: _args.memoId },
+      });
+    },
+    user: async (_parent, _args, { prisma }) => {
+      return await prisma.user.findUniqueOrThrow({
+        where: { id: _args.userId },
+      });
+    },
   },
   Memo: {
     user: async (_parent, _args, { prisma }) => {

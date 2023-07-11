@@ -23,6 +23,8 @@ type Like {
 type Query {
   memos: [Memo]
   users: [User]
+  memo(memoId: String!): Memo
+  user(userId: String!): User
 }
 
 type Mutation {

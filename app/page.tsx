@@ -8,16 +8,15 @@ import {
   gql,
 } from "@apollo/client";
 import Link from "next/link";
-import { GetUsersAndTeamsDocument } from "../graphql/dist/generated-client";
+import { useListMemosQuery } from "../graphql/dist/request";
 
 function UsersAndTeams() {
-  // const { loading, error, data } = useQuery(Documents.ListMemosDocument);
-  const { loading, error, data } = Documents.useListMemosQuery();
+  const { loading, error, data } = useListMemosQuery();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>Error</p>;
 
-  const { users } = data;
+  const { memos } = data;
 
   return (
     <>
@@ -28,13 +27,15 @@ function UsersAndTeams() {
       </div>
       <h1 className={`text-xl font-bold underline`}>User List</h1>
       <ul className={`mt-4`}>
-        {users.map(({ id, name }) => {
+        {memos?.map((memo) => {
           return (
-            <li key={id} className={`mt-4 flex items-center first:mt-0`}>
-              <p>{name} :</p>
+            <li key={memo?.id} className={`mt-4 flex items-center first:mt-0`}>
+              <p>
+                {memo?.user.name} : {memo?.content}
+              </p>
               <Link
                 className={`ml-6 rounded border bg-teal-700 p-2 text-sm text-white`}
-                href={"/show"}
+                href={`/show/${memo?.id}`}
               >
                 詳細
               </Link>

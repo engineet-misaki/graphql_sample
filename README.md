@@ -23,10 +23,11 @@ pnpm dev
 - "@apollo/server": "^4.7.4"
 
 - あとやること
-
-  - サーバーのスキーマ定義
-  - docker で DB 作って接続して操作
+  - 詳細取得の API 設定
+    -index ページからの遷移
+  - CURDAPI 実装
   - font の設定
+  - UserId の扱いどうするか考える
 
 ### 気になる点
 
