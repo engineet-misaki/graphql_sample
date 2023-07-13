@@ -9,9 +9,13 @@ import {
 } from "@apollo/client";
 import Link from "next/link";
 import { useListMemosQuery } from "../graphql/dist/request";
+import { useEffect } from "react";
 
 function UsersAndTeams() {
-  const { loading, error, data } = useListMemosQuery();
+  const { loading, error, data, refetch } = useListMemosQuery();
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>Error</p>;
@@ -21,9 +25,16 @@ function UsersAndTeams() {
   return (
     <>
       <div className={`flex justify-end`}>
-        <Link className={`border bg-slate-500 p-3 text-white`} href={"/create"}>
-          新規登録
-        </Link>
+        {memos && memos[0]?.user.id ? (
+          <Link
+            className={`border bg-slate-500 p-3 text-white`}
+            href={`/create/${memos[0]?.user.id}`}
+          >
+            新規登録
+          </Link>
+        ) : (
+          <></>
+        )}
       </div>
       <h1 className={`text-xl font-bold underline`}>User List</h1>
       <ul className={`mt-4`}>

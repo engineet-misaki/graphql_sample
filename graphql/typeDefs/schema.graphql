@@ -58,6 +58,19 @@ query ListMemos {
     }
   }
 }
+query ShowUser($userId: String!) {
+  user(userId: $userId) {
+    ...UserFragment
+  }
+}
+query ShowMemo($memoId: String!) {
+  memo(memoId: $memoId) {
+    ...MemoFragment
+    user {
+      ...UserFragment
+    }
+  }
+}
 
 mutation AddUser($name: String!) {
   addUser(name: $name) {

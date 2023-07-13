@@ -13,9 +13,9 @@ export const resolvers: Resolvers = {
         where: { id: _args.memoId },
       });
     },
-    user: async (_parent, _args, { prisma }) => {
+    user: async (_parent, { userId }, { prisma }) => {
       return await prisma.user.findUniqueOrThrow({
-        where: { id: _args.userId },
+        where: { id: userId },
       });
     },
   },

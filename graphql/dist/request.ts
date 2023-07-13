@@ -115,6 +115,20 @@ export type ListMemosQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ListMemosQuery = { __typename?: 'Query', memos?: Array<{ __typename?: 'Memo', id: string, content: string, createdAt?: string | null, user: { __typename?: 'User', id: string, name: string } } | null> | null };
 
+export type ShowUserQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type ShowUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, name: string } | null };
+
+export type ShowMemoQueryVariables = Exact<{
+  memoId: Scalars['String']['input'];
+}>;
+
+
+export type ShowMemoQuery = { __typename?: 'Query', memo?: { __typename?: 'Memo', id: string, content: string, createdAt?: string | null, user: { __typename?: 'User', id: string, name: string } } | null };
+
 export type AddUserMutationVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
@@ -217,6 +231,80 @@ export function useListMemosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type ListMemosQueryHookResult = ReturnType<typeof useListMemosQuery>;
 export type ListMemosLazyQueryHookResult = ReturnType<typeof useListMemosLazyQuery>;
 export type ListMemosQueryResult = Apollo.QueryResult<ListMemosQuery, ListMemosQueryVariables>;
+export const ShowUserDocument = gql`
+    query ShowUser($userId: String!) {
+  user(userId: $userId) {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+
+/**
+ * __useShowUserQuery__
+ *
+ * To run a query within a React component, call `useShowUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShowUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShowUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useShowUserQuery(baseOptions: Apollo.QueryHookOptions<ShowUserQuery, ShowUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ShowUserQuery, ShowUserQueryVariables>(ShowUserDocument, options);
+      }
+export function useShowUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShowUserQuery, ShowUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ShowUserQuery, ShowUserQueryVariables>(ShowUserDocument, options);
+        }
+export type ShowUserQueryHookResult = ReturnType<typeof useShowUserQuery>;
+export type ShowUserLazyQueryHookResult = ReturnType<typeof useShowUserLazyQuery>;
+export type ShowUserQueryResult = Apollo.QueryResult<ShowUserQuery, ShowUserQueryVariables>;
+export const ShowMemoDocument = gql`
+    query ShowMemo($memoId: String!) {
+  memo(memoId: $memoId) {
+    ...MemoFragment
+    user {
+      ...UserFragment
+    }
+  }
+}
+    ${MemoFragmentFragmentDoc}
+${UserFragmentFragmentDoc}`;
+
+/**
+ * __useShowMemoQuery__
+ *
+ * To run a query within a React component, call `useShowMemoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShowMemoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShowMemoQuery({
+ *   variables: {
+ *      memoId: // value for 'memoId'
+ *   },
+ * });
+ */
+export function useShowMemoQuery(baseOptions: Apollo.QueryHookOptions<ShowMemoQuery, ShowMemoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ShowMemoQuery, ShowMemoQueryVariables>(ShowMemoDocument, options);
+      }
+export function useShowMemoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShowMemoQuery, ShowMemoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ShowMemoQuery, ShowMemoQueryVariables>(ShowMemoDocument, options);
+        }
+export type ShowMemoQueryHookResult = ReturnType<typeof useShowMemoQuery>;
+export type ShowMemoLazyQueryHookResult = ReturnType<typeof useShowMemoLazyQuery>;
+export type ShowMemoQueryResult = Apollo.QueryResult<ShowMemoQuery, ShowMemoQueryVariables>;
 export const AddUserDocument = gql`
     mutation AddUser($name: String!) {
   addUser(name: $name) {

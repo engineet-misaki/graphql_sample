@@ -1,31 +1,42 @@
 "use client";
-import { useAddMemoMutation, useAddUserMutation } from "@/graphql/dist/request";
+import { useAddMemoMutation, useShowUserQuery } from "@/graphql/dist/request";
 import { useLazyQuery } from "@apollo/client";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState, useTransition } from "react";
 
 type Props = { params: { user_id: string } };
 
 function CreateUser({ params: { user_id } }: Props) {
-  // const { loading, error, data } = use();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const [AddMemoMutation] = useAddMemoMutation();
+  const { loading, error, data, refetch } = useShowUserQuery({
+    variables: { userId: user_id },
+  });
+
   const [content, setContent] = useState("");
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
+    if (!data?.user?.id) return;
 
     await AddMemoMutation({
       variables: {
         content: content,
-        userId: user_id,
+        userId: data?.user?.id,
       },
     });
 
-    setContent("");
+    router.push("/");
+    // startTransition(() => {
+    //   router.refresh();
+    // });
   };
   return (
     <>
-      <form className="flex p-10" onSubmit={submitHandler}>
-        <div className={`flex justify-start`}>
+      <form className="p-10" onSubmit={submitHandler}>
+        <div className={`flex justify-between items-center`}>
           <h1>Create userId</h1>
           <Link className={`border bg-slate-400 p-3`} href={"/"}>
             一覧へ戻る
