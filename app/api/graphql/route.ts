@@ -4,46 +4,27 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { resolvers } from "@/graphql/resolvers";
+import { createContext, Context } from "@/graphql/context";
 
-import { Resolvers } from "../../../graphql/dist/generated-server";
-
-import { NextResponse } from "next/server";
-
-const path = join(process.cwd(), "graphql", "schema.graphql");
+const path = join(process.cwd(), "graphql", "dist", "schema.graphql");
 const typeDefs = readFileSync(path).toString("utf-8");
 
-// スキーマと実際のデータ構造の紐付けを resolvers で行う
-type Team = "Red" | "White";
+const apolloServer = new ApolloServer<Context>({ typeDefs, resolvers });
 
-const teams: { id: string; name: Team }[] = [
-  { id: "1", name: "Red" },
-  { id: "2", name: "White" },
-];
+const handler = startServerAndCreateNextHandler<NextRequest, Context>(
+  apolloServer,
+  {
+    context: async (req) => ({
+      prisma: createContext().prisma,
+    }),
+  }
+);
 
-type User = { id: string; name: string; teamName: Team };
-
-const users: User[] = [
-  { id: "1", name: "Alice", teamName: "Red" },
-  { id: "2", name: "Bob", teamName: "Red" },
-  { id: "3", name: "Carol", teamName: "White" },
-];
-
-const resolvers: Resolvers = {
-  Query: {
-    users: () => users,
-    teams: () => teams,
-  },
-};
-
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
-
-const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer, {
-  context: async (req) => ({ req }),
-});
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   return handler(request);
 }
+
 export async function POST(request: NextRequest) {
   return handler(request);
 }

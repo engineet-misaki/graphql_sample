@@ -1,0 +1,39 @@
+scalar DateTime
+
+type Like {
+  createdAt: DateTime
+  id: ID!
+  likeUser: User!
+  memo: Memo!
+}
+
+type Memo {
+  content: String!
+  createdAt: DateTime
+  id: ID!
+  like: [Like]!
+  likeNum: Int!
+  user: User!
+}
+
+type Mutation {
+  addMemo(content: String!, userId: ID!): Memo!
+  addUser(name: String!): User!
+  deleteMemo(id: ID!): Memo!
+  likeMemo(id: ID!, userId: ID!): Like!
+  likeMemoDelete(id: ID!): Like!
+  updateMemo(content: String!, id: ID!): Memo!
+}
+
+type Query {
+  memo(memoId: String!): Memo
+  memos: [Memo]
+  user(userId: String!): User
+  users: [User]
+}
+
+type User {
+  id: ID!
+  memos: [Memo]
+  name: String!
+}

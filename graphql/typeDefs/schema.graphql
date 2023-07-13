@@ -1,0 +1,104 @@
+type Memo {
+  id: ID!
+  content: String!
+  user: User!
+  like: [Like]!
+  likeNum: Int!
+  createdAt: DateTime
+}
+
+type User {
+  id: ID!
+  name: String!
+  memos: [Memo]
+}
+
+type Like {
+  id: ID!
+  likeUser: User!
+  memo: Memo!
+  createdAt: DateTime
+}
+
+type Query {
+  memos: [Memo]
+  users: [User]
+  memo(memoId: String!): Memo
+  user(userId: String!): User
+}
+
+type Mutation {
+  addUser(name: String!): User!
+  addMemo(content: String!, userId: ID!): Memo!
+  updateMemo(id: ID!, content: String!): Memo!
+  likeMemo(id: ID!, userId: ID!): Like!
+  likeMemoDelete(id: ID!): Like!
+  deleteMemo(id: ID!): Memo!
+}
+
+fragment MemoFragment on Memo {
+  id
+  content
+  createdAt
+}
+fragment UserFragment on User {
+  id
+  name
+}
+fragment LikeFragment on Like {
+  id
+  createdAt
+}
+
+query ListMemos {
+  memos {
+    ...MemoFragment
+    user {
+      ...UserFragment
+    }
+  }
+}
+query ShowUser($userId: String!) {
+  user(userId: $userId) {
+    ...UserFragment
+  }
+}
+query ShowMemo($memoId: String!) {
+  memo(memoId: $memoId) {
+    ...MemoFragment
+    user {
+      ...UserFragment
+    }
+  }
+}
+
+mutation AddUser($name: String!) {
+  addUser(name: $name) {
+    ...UserFragment
+  }
+}
+mutation AddMemo($content: String!, $userId: ID!) {
+  addMemo(content: $content, userId: $userId) {
+    ...MemoFragment
+  }
+}
+mutation updateMemo($id: ID!, $content: String!) {
+  updateMemo(id: $id, content: $content) {
+    ...MemoFragment
+  }
+}
+mutation LikeMemo($id: ID!, $userId: ID!) {
+  likeMemo(id: $id, userId: $userId) {
+    ...LikeFragment
+  }
+}
+mutation likeMemoDelete($id: ID!) {
+  likeMemoDelete(id: $id) {
+    ...LikeFragment
+  }
+}
+mutation DeleteMemo($id: ID!) {
+  deleteMemo(id: $id) {
+    ...MemoFragment
+  }
+}
