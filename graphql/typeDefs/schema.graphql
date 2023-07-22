@@ -10,6 +10,8 @@ type Memo {
 type User {
   id: ID!
   name: String!
+  email: String!
+  password: String!
   memos: [Memo]
 }
 
@@ -28,12 +30,13 @@ type Query {
 }
 
 type Mutation {
-  addUser(name: String!): User!
   addMemo(content: String!, userId: ID!): Memo!
   updateMemo(id: ID!, content: String!): Memo!
   likeMemo(id: ID!, userId: ID!): Like!
   likeMemoDelete(id: ID!): Like!
   deleteMemo(id: ID!): Memo!
+  signup(email: String!, password: String!, name: String!): User!
+  signin(email: String!, password: String!): User!
 }
 
 fragment MemoFragment on Memo {
@@ -72,11 +75,6 @@ query ShowMemo($memoId: String!) {
   }
 }
 
-mutation AddUser($name: String!) {
-  addUser(name: $name) {
-    ...UserFragment
-  }
-}
 mutation AddMemo($content: String!, $userId: ID!) {
   addMemo(content: $content, userId: $userId) {
     ...MemoFragment
@@ -100,5 +98,19 @@ mutation likeMemoDelete($id: ID!) {
 mutation DeleteMemo($id: ID!) {
   deleteMemo(id: $id) {
     ...MemoFragment
+  }
+}
+mutation Signup($email: String!, $password: String!, $name: String!) {
+  signup(email: $email, password: $password, name: $name) {
+    email
+    password
+    name
+  }
+}
+mutation Signin($email: String!, $password: String!) {
+  signin(email: $email, password: $password) {
+    email
+    password
+    name
   }
 }

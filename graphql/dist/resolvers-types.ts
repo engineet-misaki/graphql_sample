@@ -40,10 +40,11 @@ export type Memo = {
 export type Mutation = {
   __typename?: 'Mutation';
   addMemo: Memo;
-  addUser: User;
   deleteMemo: Memo;
   likeMemo: Like;
   likeMemoDelete: Like;
+  signin: User;
+  signup: User;
   updateMemo: Memo;
 };
 
@@ -51,11 +52,6 @@ export type Mutation = {
 export type MutationAddMemoArgs = {
   content: Scalars['String']['input'];
   userId: Scalars['ID']['input'];
-};
-
-
-export type MutationAddUserArgs = {
-  name: Scalars['String']['input'];
 };
 
 
@@ -72,6 +68,19 @@ export type MutationLikeMemoArgs = {
 
 export type MutationLikeMemoDeleteArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationSigninArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
+export type MutationSignupArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 
@@ -100,9 +109,11 @@ export type QueryUserArgs = {
 
 export type User = {
   __typename?: 'User';
+  email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   memos?: Maybe<Array<Maybe<Memo>>>;
   name: Scalars['String']['output'];
+  password: Scalars['String']['output'];
 };
 
 
@@ -226,10 +237,11 @@ export type MemoResolvers<ContextType = Context, ParentType extends ResolversPar
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationAddMemoArgs, 'content' | 'userId'>>;
-  addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'name'>>;
   deleteMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationDeleteMemoArgs, 'id'>>;
   likeMemo?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeMemoArgs, 'id' | 'userId'>>;
   likeMemoDelete?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeMemoDeleteArgs, 'id'>>;
+  signin?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSigninArgs, 'email' | 'password'>>;
+  signup?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'name' | 'password'>>;
   updateMemo?: Resolver<ResolversTypes['Memo'], ParentType, ContextType, RequireFields<MutationUpdateMemoArgs, 'content' | 'id'>>;
 };
 
@@ -241,9 +253,11 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   memos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Memo']>>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

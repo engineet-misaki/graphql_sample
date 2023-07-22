@@ -28,6 +28,8 @@ model Memo {
 
 model User {
   id    String  @id @default(cuid())
+  email  String
+  password  String
   name  String
   memos   Memo[]
   likes     Like[]

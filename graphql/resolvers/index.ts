@@ -38,11 +38,6 @@ export const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    addUser: async (_parent, { name }, { prisma }) => {
-      return await prisma.user.create({
-        data: { name, createdAt: new Date().toISOString() },
-      });
-    },
     addMemo: async (_parent, { content, userId }, { prisma }) => {
       return await prisma.memo.create({
         data: { content, userId, createdAt: new Date().toISOString() },
@@ -68,6 +63,14 @@ export const resolvers: Resolvers = {
       return await prisma.memo.delete({
         where: { id },
       });
+    },
+    signup: async (_parent, { email, password, name }, { prisma }) => {
+      return await prisma.user.create({
+        data: { email, password, name, createdAt: new Date().toISOString() },
+      });
+    },
+    signin: async (_parent, { email, password }, { prisma }) => {
+      return await prisma.user.findFirstOrThrow();
     },
   },
 };

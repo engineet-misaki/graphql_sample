@@ -18,10 +18,11 @@ type Memo {
 
 type Mutation {
   addMemo(content: String!, userId: ID!): Memo!
-  addUser(name: String!): User!
   deleteMemo(id: ID!): Memo!
   likeMemo(id: ID!, userId: ID!): Like!
   likeMemoDelete(id: ID!): Like!
+  signin(email: String!, password: String!): User!
+  signup(email: String!, name: String!, password: String!): User!
   updateMemo(content: String!, id: ID!): Memo!
 }
 
@@ -33,7 +34,9 @@ type Query {
 }
 
 type User {
+  email: String!
   id: ID!
   memos: [Memo]
   name: String!
+  password: String!
 }
