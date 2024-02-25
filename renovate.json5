@@ -1,0 +1,33 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [":timezone(Asia/Tokyo)", "config:js-app"],
+  schedule: ["after 9am on friday", "before 12am on friday"], // 午前九時から12時までの間にスケジューリング
+  dependencyDashboard: true,
+  ignorePaths: [
+    // 無視したいパス
+  ],
+  ignoreDeps: [
+    // 無視したいパッケージ
+  ],
+  reviewers: ["engineet-misaki"],
+  packageRules: [
+    {
+      groupName: "all major dependencies",
+      groupSlug: "all-major",
+      matchPackagePatterns: ["*"],
+      matchUpdateTypes: ["major"],
+    },
+    {
+      groupName: "all non-major dependencies",
+      groupSlug: "all-minor-patch",
+      matchPackagePatterns: ["*"],
+      matchUpdateTypes: ["minor", "patch"],
+    },
+  ],
+  major: {
+    stabilityDays: 7,
+  },
+  minor: {
+    stabilityDays: 3,
+  },
+}
